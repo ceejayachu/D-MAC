@@ -1,4 +1,6 @@
- Studio Drum Machine & Sampler Workstation
+https://github.com/user-attachments/assets/62ebed61-33d9-487b-8a0d-d928965e21a8 
+
+Studio Drum Machine & Sampler Workstation
 Problem Diagnosis: Why Samples Were Not Loading
 Outdated bundle.js: index.html loads bundle.js directly to avoid CORS issues on file:///. However, bundle.js was previously out of date and contained legacy code where track definitions used .file with relative paths (../KIT 1/...) rather than canonical paths, causing every sample fetch outside Kit 1 to 404 and fall back to synthetic oscillators.
 Missing Local Server Fallback in Decoder: When users opened index.html directly via file:/// in browsers, modern Chromium security automatically blocked fetch() requests on the file: scheme.
