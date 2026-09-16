@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MetroTune Pro Drum Machine & 64-Step Sampler Workstation with 16 MPC Performance Pads, Choke Groups, Master DSP Effects Rack, and WAV Exporter.">
+  <title>METROTUNE DRUM MACHINE — Professional 64-Step Sampler & MPC Workstation</title>
+  <link rel="stylesheet" href="drum-machine.css">
+</head>
+<body>
+
+  <div class="drum-chassis">
+    <!-- Top Chassis Header -->
+    <header class="top-header">
+      <div class="branding">
+        <div class="brand-badge">DM-64 PRO</div>
+        <h1 class="brand-title">METROTUNE <span>DRUM MACHINE</span></h1>
+        <div class="brand-subtitle">// 16-TRACK 64-STEP SAMPLER &bull; MULTI-DSP MATRIX</div>
+      </div>
+      <div class="transport-group" style="gap: 12px;">
+        <!-- View Mode Switcher -->
+        <div class="view-switch-group">
+          <button id="btnViewSequencer" class="btn-view-toggle active" title="Show 64-Step Pattern Matrix & 4x4 Pads (HotKey: S)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"/>
+              <rect x="14" y="3" width="7" height="7"/>
+              <rect x="14" y="14" width="7" height="7"/>
+              <rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            SEQUENCER
+          </button>
+          <button id="btnViewMixer" class="btn-view-toggle" title="Show 16-Channel Studio Mixer Console (HotKey: M)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="21" x2="4" y2="14"/>
+              <line x1="4" y1="10" x2="4" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12" y2="3"/>
+              <line x1="20" y1="21" x2="20" y2="16"/>
+              <line x1="20" y1="12" x2="20" y2="3"/>
+              <circle cx="4" cy="12" r="2" fill="currentColor"/>
+              <circle cx="12" cy="10" r="2" fill="currentColor"/>
+              <circle cx="20" cy="14" r="2" fill="currentColor"/>
+            </svg>
+            MIXER CONSOLE
+          </button>
+        </div>
+
+        <div id="sampleStatusBadge" class="status-badge" style="background: rgba(0, 255, 136, 0.1); border: 1px solid var(--accent-green); padding: 5px 10px; border-radius: 5px;">
+          <span class="status-dot"></span>
+          <span id="sampleStatusText" style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-green); font-weight: 700;">16/16 SAMPLES READY</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Master Transport & Rhythm Bar -->
+    <section class="transport-bar" aria-label="Transport and Playback Controls">
+      <!-- Play / Stop / Record -->
+      <div class="transport-group">
+        <button id="btnPlay" class="btn-transport btn-play" aria-label="Play or Pause (Spacebar)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          PLAY
+        </button>
+        <button id="btnStop" class="btn-transport" aria-label="Stop Playback">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <rect x="6" y="6" width="12" height="12"/>
+          </svg>
+          STOP
+        </button>
+        <button id="btnRecord" class="btn-transport btn-record" aria-label="Toggle Live Pad Record (R)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="12" r="8"/>
+          </svg>
+          REC
+        </button>
+      </div>
+
+      <!-- Tempo Display & Tap -->
+      <div class="transport-group">
+        <div class="digital-box">
+          <span class="digital-label">TEMPO</span>
+          <div class="digital-value">
+            <span id="valBpm">140</span>
+            <span class="digital-unit">BPM</span>
+          </div>
+        </div>
+        <div class="slider-control-group">
+          <button id="btnTapTempo" class="btn-transport" style="padding: 4px 8px; font-size: 10px;">TAP</button>
+          <input type="range" id="sliderBpm" class="fader-slider" min="40" max="220" value="140" style="width: 80px;" aria-label="Tempo Slider">
+        </div>
+      </div>
+
+      <!-- Swing & Humanize -->
+      <div class="transport-group">
+        <div class="slider-control-group">
+          <span class="control-label">SWING</span>
+          <input type="range" id="sliderSwing" class="fader-slider" min="0" max="50" value="12" style="width: 70px;" aria-label="Swing Percentage">
+          <span id="valSwing" style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-cyan);">12%</span>
+        </div>
+        <div class="slider-control-group">
+          <span class="control-label">HUMANIZE</span>
+          <input type="range" id="sliderHumanize" class="fader-slider" min="0" max="40" value="0" style="width: 70px;" aria-label="Humanize Percentage">
+          <span id="valHumanize" style="font-family: var(--font-mono); font-size: 11px; color: var(--accent-green);">0%</span>
+        </div>
+      </div>
+
+      <!-- Kit, Preset & Theme Selectors -->
+      <div class="transport-group">
+        <div class="slider-control-group" style="gap: 8px;">
+          <span class="control-label">THEME</span>
+          <select id="themeSelect" class="custom-select" aria-label="Select Studio Visual Theme">
+            <option value="titanium">Stealth Titanium (Dark)</option>
+            <option value="shiny">Shiny Chrome (Neumorphic White)</option>
+            <option value="cyberpunk">Cyberpunk 2077 (Neon)</option>
+            <option value="vintage808">Roland TR-808 (Vintage)</option>
+            <option value="matrix">Matrix Terminal (CRT)</option>
+          </select>
+        </div>
+        <div class="slider-control-group" style="gap: 8px;">
+          <span class="control-label">KIT</span>
+          <select id="kitSelect" class="custom-select" aria-label="Select Drum Kit"></select>
+        </div>
+        <div class="slider-control-group" style="gap: 8px;">
+          <span class="control-label">GENRE</span>
+          <select id="presetSelect" class="custom-select" aria-label="Select Genre Demo Preset"></select>
+        </div>
+      </div>
+
+      <!-- Pattern Banks (A, B, C, D) & Song Mode -->
+      <div class="transport-group">
+        <span class="control-label">BANK</span>
+        <div class="pattern-bank-group">
+          <button class="btn-bank active" data-bank="0">A</button>
+          <button class="btn-bank" data-bank="1">B</button>
+          <button class="btn-bank" data-bank="2">C</button>
+          <button class="btn-bank" data-bank="3">D</button>
+        </div>
+        <button id="btnChainMode" class="btn-transport" style="padding: 4px 8px; font-size: 10px;" title="Loop Pattern Chain">SONG</button>
+      </div>
+
+      <!-- Utility Actions -->
+      <div class="transport-group">
+        <button id="btnLoadFolder" class="btn-transport" style="border-color: var(--accent-orange); color: var(--accent-orange);" title="Select your METROTUNE samples folder directly">LOAD SAMPLES FOLDER</button>
+        <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;">
+        <button id="btnClearPattern" class="btn-transport" style="padding: 6px 10px; font-size: 11px;" title="Clear Active Pattern">CLEAR</button>
+        <button id="btnExportWav" class="btn-transport" style="background: linear-gradient(180deg, #37415d 0%, #1e2436 100%); color: var(--accent-cyan); border-color: var(--accent-cyan);" title="Render and Download Audio Loop">EXPORT WAV</button>
+        <button id="btnSaveJson" class="btn-transport" style="padding: 6px 8px; font-size: 11px;" title="Save Pattern to JSON">SAVE</button>
+        <button id="btnLoadJson" class="btn-transport" style="padding: 6px 8px; font-size: 11px;" title="Load Pattern from JSON">LOAD</button>
+        <input type="file" id="fileJsonInput" accept=".json" style="display: none;">
+      </div>
+    </section>    <!-- Main Studio Body (Sequencer View) -->
+    <main id="sequencerView" class="studio-body">
+      
+      <!-- Left Dock: 4x4 MPC Performance Drum Pads + Live Scope + Master FX -->
+      <section class="left-dock" aria-label="Performance Pads and Master DSP">
+        <!-- 4x4 MPC Pads Card -->
+        <div class="dock-card">
+          <div class="card-title">
+            <span>PERFORMANCE PADS</span>
+            <span class="badge">HOTKEYS: 1-4, Q-R, A-F, Z-V</span>
+          </div>
+          <div id="mpcGrid" class="mpc-grid" aria-label="MPC Drum Pads Grid"></div>
+        </div>
+
+        <!-- Real-Time Scope & VU Meters -->
+        <div class="dock-card visualizer-dock">
+          <div class="card-title">
+            <span>MASTER BUS SPECTRUM</span>
+            <span class="badge">STEREO PEAK</span>
+          </div>
+          <canvas id="oscilloscope" class="oscilloscope-canvas" width="340" height="90"></canvas>
+          <div class="vu-meter-rack">
+            <div class="vu-channel">
+              <span class="vu-label">L</span>
+              <div class="vu-track"><div id="vuFillL" class="vu-fill"></div></div>
+            </div>
+            <div class="vu-channel">
+              <span class="vu-label">R</span>
+              <div class="vu-track"><div id="vuFillR" class="vu-fill"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Master DSP FX Rack -->
+        <div class="dock-card dsp-rack">
+          <div class="card-title">
+            <span>MASTER DSP RACK</span>
+            <span class="badge">ANALOG MODEL</span>
+          </div>
+          <div class="dsp-controls-grid">
+            <!-- Filter -->
+            <div class="dsp-unit">
+              <div class="dsp-unit-header">
+                <span class="dsp-title">FILTER</span>
+                <select id="fxFilterType" class="custom-select" style="padding: 1px 4px; font-size: 10px;">
+                  <option value="lowpass">LPF</option>
+                  <option value="highpass">HPF</option>
+                  <option value="bandpass">BPF</option>
+                </select>
+              </div>
+              <div class="dsp-faders">
+                <div class="mini-fader">
+                  <label>CUT</label>
+                  <input type="range" id="fxFilterCutoff" class="fader-slider" min="50" max="18000" value="18000" style="width: 65px;">
+                  <span id="valFilterCutoff">18kHz</span>
+                </div>
+                <div class="mini-fader">
+                  <label>RES</label>
+                  <input type="range" id="fxFilterRes" class="fader-slider" min="0.1" max="18" step="0.1" value="1.0" style="width: 65px;">
+                  <span id="valFilterRes">Q 1.0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Distortion -->
+            <div class="dsp-unit">
+              <div class="dsp-unit-header">
+                <span class="dsp-title">OVERDRIVE</span>
+              </div>
+              <div class="dsp-faders">
+                <div class="mini-fader">
+                  <label>DRIVE</label>
+                  <input type="range" id="fxDistDrive" class="fader-slider" min="0" max="60" value="0" style="width: 65px;">
+                  <span id="valDistDrive">0%</span>
+                </div>
+                <div class="mini-fader">
+                  <label>MIX</label>
+                  <input type="range" id="fxDistMix" class="fader-slider" min="0" max="100" value="0" style="width: 65px;">
+                  <span id="valDistMix">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Delay -->
+            <div class="dsp-unit">
+              <div class="dsp-unit-header">
+                <span class="dsp-title">DELAY</span>
+              </div>
+              <div class="dsp-faders">
+                <div class="mini-fader">
+                  <label>TIME</label>
+                  <input type="range" id="fxDelayTime" class="fader-slider" min="0.05" max="0.8" step="0.01" value="0.25" style="width: 65px;">
+                  <span id="valDelayTime">250ms</span>
+                </div>
+                <div class="mini-fader">
+                  <label>FDBK</label>
+                  <input type="range" id="fxDelayFeedback" class="fader-slider" min="0" max="85" value="30" style="width: 65px;">
+                  <span id="valDelayFeedback">30%</span>
+                </div>
+                <div class="mini-fader">
+                  <label>MIX</label>
+                  <input type="range" id="fxDelayMix" class="fader-slider" min="0" max="100" value="0" style="width: 65px;">
+                  <span id="valDelayMix">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reverb -->
+            <div class="dsp-unit">
+              <div class="dsp-unit-header">
+                <span class="dsp-title">REVERB</span>
+              </div>
+              <div class="dsp-faders">
+                <div class="mini-fader">
+                  <label>DECAY</label>
+                  <input type="range" id="fxReverbDecay" class="fader-slider" min="0.5" max="5.0" step="0.1" value="2.2" style="width: 65px;">
+                  <span id="valReverbDecay">2.2s</span>
+                </div>
+                <div class="mini-fader">
+                  <label>MIX</label>
+                  <input type="range" id="fxReverbMix" class="fader-slider" min="0" max="100" value="0" style="width: 65px;">
+                  <span id="valReverbMix">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Master Volume -->
+            <div class="dsp-unit" style="grid-column: span 2;">
+              <div class="dsp-unit-header">
+                <span class="dsp-title">MASTER OUTPUT</span>
+              </div>
+              <div class="mini-fader" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                <label>LEVEL</label>
+                <input type="range" id="masterVol" class="fader-slider" min="0" max="1.5" step="0.02" value="0.85" style="flex: 1; margin: 0 12px;">
+                <span id="valMasterVol" style="font-size: 13px; font-weight: 700; color: var(--accent-cyan);">85%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Main: 64-Step Grid Sequencer Matrix -->
+      <section class="main-sequencer" aria-label="Step Sequencer Matrix">
+        <div class="dock-card sequencer-card">
+          <div class="card-title">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span>64-STEP PATTERN MATRIX</span>
+              <span id="currentKitBadge" class="badge" style="background: rgba(0, 229, 255, 0.15); color: var(--accent-cyan); border-color: var(--accent-cyan);">KIT 1: METRO TRAP</span>
+            </div>
+            
+            <!-- Page / Bar Switcher (Pages 1-4 for 64 steps) -->
+            <div class="sequencer-page-nav">
+              <span class="control-label" style="font-size: 10px;">BAR:</span>
+              <div class="page-btn-group">
+                <button class="btn-page active" data-page="0">1-16</button>
+                <button class="btn-page" data-page="1">17-32</button>
+                <button class="btn-page" data-page="2">33-48</button>
+                <button class="btn-page" data-page="3">49-64</button>
+              </div>
+
+              <!-- Pattern Resolution / Length -->
+              <span class="control-label" style="font-size: 10px; margin-left: 10px;">LENGTH:</span>
+              <select id="stepResolution" class="custom-select" style="padding: 2px 6px; font-size: 11px;">
+                <option value="16">16 Steps (1 Bar)</option>
+                <option value="32" selected>32 Steps (2 Bars)</option>
+                <option value="48">48 Steps (3 Bars)</option>
+                <option value="64">64 Steps (4 Bars)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Sequencer Table Container -->
+          <div class="matrix-container">
+            <div class="step-matrix">
+              <!-- Playhead LED Indicator Row -->
+              <div id="ledRow" class="playhead-led-row"></div>
+              <!-- Track Rows Grid -->
+              <div id="stepMatrix"></div>
+            </div>
+          </div>
+
+          <!-- Active Track Detail & Sound Sculpting Drawer -->
+          <div id="trackDrawer" class="track-drawer"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 16-Channel Studio Mixer Console View -->
+    <section id="mixerView" class="mixer-console-view" style="display: none;" aria-label="16-Channel Studio Mixing Console">
+      <div class="mixer-header-bar">
+        <div class="mixer-header-info">
+          <span class="mixer-header-badge">16-CH SSL / MPC MATRIX CONSOLE</span>
+          <span class="mixer-header-title">STUDIO MULTI-TRACK MIXER</span>
+          <span class="mixer-header-subtitle">// LEVEL &bull; PAN &bull; PITCH &bull; CHOKE &bull; PEAK METERS &bull; MUTE / SOLO</span>
+        </div>
+        <div class="mixer-header-actions">
+          <button id="btnMixerResetLevels" class="btn-transport" style="padding: 4px 10px; font-size: 11px;" title="Reset all 16 faders to 85% unity gain">RESET FADERS</button>
+          <button id="btnMixerZeroPans" class="btn-transport" style="padding: 4px 10px; font-size: 11px;" title="Center all stereo pans">CENTER PANS</button>
+          <button id="btnMixerUnmuteAll" class="btn-transport" style="padding: 4px 10px; font-size: 11px;" title="Unmute all tracks">UNMUTE ALL</button>
+          <button id="btnMixerClearSolos" class="btn-transport" style="padding: 4px 10px; font-size: 11px;" title="Clear all active solos">CLEAR SOLOS</button>
+        </div>
+      </div>
+
+      <div class="mixer-console-layout">
+        <!-- 16 Channel Strips Scrollable Area -->
+        <div class="mixer-strips-scroll">
+          <div id="mixerStrips" class="mixer-strips-container">
+            <!-- 16 Channel strips dynamically generated by app.js -->
+          </div>
+        </div>
+
+        <!-- Master Bus Channel Strip -->
+        <div id="mixerMasterStrip" class="mixer-master-strip">
+          <div class="master-strip-header">
+            <span class="master-badge">MASTER</span>
+            <div class="master-title">STEREO BUS</div>
+          </div>
+
+          <!-- Master Stereo Meter -->
+          <div class="master-meters-dual">
+            <div class="mixer-meter-track">
+              <div id="mixerMasterMeterL" class="mixer-meter-fill"></div>
+            </div>
+            <div class="mixer-meter-track">
+              <div id="mixerMasterMeterR" class="mixer-meter-fill"></div>
+            </div>
+          </div>
+
+          <!-- Master Fader -->
+          <div class="mixer-fader-assembly">
+            <div class="fader-scale">
+              <span>+6</span>
+              <span>+3</span>
+              <span class="fader-unity">0</span>
+              <span>-6</span>
+              <span>-12</span>
+              <span>-24</span>
+              <span>-∞</span>
+            </div>
+            <div class="fader-slot-wrapper">
+              <input type="range" id="mixerMasterFader" class="mixer-vertical-fader" min="0" max="1.5" step="0.01" value="0.85" orient="vertical">
+            </div>
+          </div>
+
+          <div class="master-readout" id="mixerMasterVal">85%</div>
+
+          <div class="master-actions">
+            <button id="btnMasterMute" class="btn-mixer-mute" style="width: 100%;">MUTE</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chassis Footer -->
+    <footer class="chassis-footer">
+      <div>
+        <span>METROTUNE DRUM MACHINE WORKSTATION v2.0</span> &bull; 
+        <span>SAMPLES: 7-KIT STUDIO LIBRARY</span>
+      </div>
+      <div class="keyboard-hints">
+        <span><span class="key-badge">SPACE</span> PLAY/PAUSE</span>
+        <span><span class="key-badge">M</span> MIXER / <span class="key-badge">S</span> SEQ</span>
+        <span><span class="key-badge">R</span> LIVE REC</span>
+        <span><span class="key-badge">1-4</span> <span class="key-badge">Q-R</span> <span class="key-badge">A-F</span> <span class="key-badge">Z-V</span> PADS</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="bundle.js"></script>
+</body>
+</html>

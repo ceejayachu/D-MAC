@@ -1,0 +1,11 @@
+{
+  "name": "metrotune-drum-machine-workstation",
+  "version": "1.0.0",
+  "description": "METROTUNE DRUM MACHINE WORKSTATION — 16-Track 64-Step Sampler & MPC Performance Workstation",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "MetroTune Studio",
+  "license": "MIT"
+}
